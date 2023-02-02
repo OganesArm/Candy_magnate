@@ -65,6 +65,7 @@ async def mes_setting(message: types.Message):
     total = 100
     await message.answer(f'Это я, Skynet. Если ты думаешь, что у тебя есть шансы, то ошибаешься! Сегодня я тебя уничтожу! Вводи число, какое количество конфет ты заберешь от 0 до 28 и поехали!"')
     time.sleep(1)
+    await message.answer('Цель игры чтобы на столе осталось 28 или меньше конфет, выиграет тот кто последний вытягивал')
     with open ('C:\Python GB\Seminar_9\photo\yeds2.jpg', 'rb') as photo2:
         await message.answer_photo(photo2)
     photo2.closed
@@ -126,6 +127,17 @@ async def mes_all(message: types.Message):
                 with open ('C:\Python GB\Seminar_9\photo\dwds3.jpg', 'rb') as photo3:
                     await message.answer_photo(photo3)
                 photo3.closed
+                user= []
+                user.append(datetime.now().replace(microsecond=0))
+                user.append(message.from_user.full_name)
+                user.append(message.from_user.id)
+                user.append(message.from_user.username)
+                user.append('ВЫИГРАЛ |')
+                user = list(map(str, user))
+                with open('C:\Python GB\Seminar_9\TextRes.txt', 'a', encoding='utf-8') as data:
+                    data.write(' | ' .join(user)+ '\n')
+                data.closed
+                
             if x == False:
                 await message.answer(f'Последний ход был за Skynet, как и следовало ожидать искуственный интеллект победил!')
                 time.sleep(3)
@@ -133,6 +145,16 @@ async def mes_all(message: types.Message):
                 with open ('C:\Python GB\Seminar_9\photo\dfwe4.jpg', 'rb') as photo4:
                     await message.answer_photo(photo4)
                 photo4.closed
+                user= []
+                user.append(datetime.now().replace(microsecond=0))
+                user.append(message.from_user.full_name)
+                user.append(message.from_user.id)
+                user.append(message.from_user.username)
+                user.append('ПРОИГРАЛ |')
+                user = list(map(str, user))
+                with open('C:\Python GB\Seminar_9\TextRes.txt', 'a', encoding='utf-8') as data:
+                    data.write(' | ' .join(user)+ '\n')
+                data.closed
 
     if message.text.isdigit() == False:
         await message.answer('Введи число от 0 до 28, а не глупости всякие!')
