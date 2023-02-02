@@ -6,11 +6,12 @@ from asyncio import sleep
 import time
 from button import kb_main_menu
 from datetime import datetime
-global photo1, photo2 
-photo1 = open('C:\Python GB\Seminar_9\efrt.jpg', 'rb')
-photo2 = open('C:\Python GB\Seminar_9\yeds2.jpg', 'rb')
-photo3 = open('C:\Python GB\Seminar_9\dwds3.jpg', 'rb')
-photo4 = open('C:\Python GB\Seminar_9\dfwe4.jpg', 'rb')
+
+"""photo1 = open('C:\Python GB\Seminar_9\photo\efrt.jpg', 'rb')
+photo2 = open('C:\Python GB\Seminar_9\photo\yeds2.jpg', 'rb')
+photo3 = open('C:\Python GB\Seminar_9\photo\dwds3.jpg', 'rb')
+photo4 = open('C:\Python GB\Seminar_9\photo\dfwe4.jpg', 'rb')"""
+
 
 
 @dp.message_handler(commands=['start'])
@@ -53,15 +54,30 @@ async def mes_setting(message: types.Message):
     time.sleep(2)
     await message.answer(f'Это я, Skynet. Если ты думаешь, что у тебя есть шансы, то ошибаешься! Сегодня я тебя уничтожу! Вводи число, какое количество конфет ты заберешь от 0 до 28 и поехали!"')
     time.sleep(2)
-    await message.answer_photo(photo2)
+    with open ('C:\Python GB\Seminar_9\photo\yeds2.jpg', 'rb') as photo2:
+        await message.answer_photo(photo2)
+    photo2.closed
+
 
 @dp.message_handler(text=['Играть'])
 async def mes_setting(message: types.Message):
     global total
     total = 100
     await message.answer(f'Это я, Skynet. Если ты думаешь, что у тебя есть шансы, то ошибаешься! Сегодня я тебя уничтожу! Вводи число, какое количество конфет ты заберешь от 0 до 28 и поехали!"')
-    time.sleep(2)
-    await message.answer_photo(photo2)
+    time.sleep(1)
+    with open ('C:\Python GB\Seminar_9\photo\yeds2.jpg', 'rb') as photo2:
+        await message.answer_photo(photo2)
+    photo2.closed
+    user= []
+    user.append(datetime.now().replace(microsecond=0))
+    user.append(message.from_user.full_name)
+    user.append(message.from_user.id)
+    user.append(message.from_user.username)
+    user = list(map(str, user))
+    with open('C:\Python GB\Seminar_9\Text.txt', 'a', encoding='utf-8') as data:
+        data.write(' | ' .join(user)+ '\n')
+    data.closed
+
 
 @dp.message_handler(text=['Бла', 'бла'])
 async def mes_bla(message: types.Message):
@@ -69,9 +85,18 @@ async def mes_bla(message: types.Message):
 
 @dp.message_handler(commands=['photo'])
 async def get_user_photo(message: types.Message):
-    await message.answer_photo(photo1)
-    await message.answer_photo(photo2)
-    await message.answer_photo(photo3)
+    with open ('C:\Python GB\Seminar_9\photo\efrt.jpg', 'rb') as photo1:
+        await message.answer_photo(photo1)
+    photo1.closed
+    with open ('C:\Python GB\Seminar_9\photo\yeds2.jpg', 'rb') as photo2:
+        await message.answer_photo(photo2)
+    photo2.closed
+    with open ('C:\Python GB\Seminar_9\photo\dwds3.jpg', 'rb') as photo3:
+        await message.answer_photo(photo3)
+    photo3.closed
+    with open ('C:\Python GB\Seminar_9\photo\dfwe4.jpg', 'rb') as photo4:
+        await message.answer_photo(photo4)
+    photo4.closed
 
 @dp.message_handler()
 async def mes_all(message: types.Message):
@@ -98,12 +123,16 @@ async def mes_all(message: types.Message):
                 await message.answer(f'Кто бы мог подумать, что жалкий человек сможет меня победить...')
                 time.sleep(3)
                 await message.answer('Я должен отыграться, жми ИГРАТЬ! !!!')
-                await message.answer_photo(photo4)
+                with open ('C:\Python GB\Seminar_9\photo\dwds3.jpg', 'rb') as photo3:
+                    await message.answer_photo(photo3)
+                photo3.closed
             if x == False:
                 await message.answer(f'Последний ход был за Skynet, как и следовало ожидать искуственный интеллект победил!')
                 time.sleep(3)
                 await message.answer('Попытайтесь взять реванш, \nдля повтора жми ИГРАТЬ!')
-                await message.answer_photo(photo4)
+                with open ('C:\Python GB\Seminar_9\photo\dfwe4.jpg', 'rb') as photo4:
+                    await message.answer_photo(photo4)
+                photo4.closed
 
     if message.text.isdigit() == False:
         await message.answer('Введи число от 0 до 28, а не глупости всякие!')
