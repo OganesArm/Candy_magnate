@@ -1,7 +1,7 @@
 from aiogram import Bot, Dispatcher, executor, types
 from handlers import dp
 
-total = 150
+total = 50
 async def on_start(_):
     print('Bot start!')
 
