@@ -11,6 +11,7 @@ from classes import Arena, Duel
 
 arena= Arena()
 
+
 @dp.message_handler(commands=['pvp'])
 async def mes_pvp(message: types.Message):
     global arena
@@ -19,23 +20,24 @@ async def mes_pvp(message: types.Message):
     for duel in arena.waiting:
         if duel.first_id==message.from_user.id or duel.second_id==message.from_user.id:
             await message.answer('Ты уже стоишь в очереди на бойню!\nЛучше позови друзей :--)')
-            break
+            break  
     else:
-        duel= arena.waiting.pop()
-        duel.add(message.from_user.id)
+        duel = arena.waiting.pop()       # удаляем первого игрока
+        duel.add(message.from_user.id)   # добавляем второго игрока
         if duel.full:
+            print(f"Второй игрок {message.from_user.first_name}")
             arena.combats.append(duel)
             duel.first_move()
-            print(duel.current)
             await dp.bot.send_message(duel.first_id, f'Противник найден! Против тебя {message.from_user.first_name}!')
-            await dp.bot.send_message(duel.current_move(), f'Противник найден! Против тебя {message.from_user.first_name}!Сейчас решим, кто первый ходит!\nКидаем жребий...')
+            await dp.bot.send_message(duel.current_move(), f'Противник найден! Против тебя !Сейчас решим, кто первый ходит!\nКидаем жребий...')
             await dp.bot.send_message(duel.enemy(), 'Сейчас решим, кто первый ходит!\nКидаем жребий...')
             time.sleep(3)
             await dp.bot.send_message(duel.current_move(), 'Жребий выбрал тебя первым! Удача на твоей стороне.\nТвой ход')
             await dp.bot.send_message(duel.enemy(), 'Первым ходит противник, плохое начало...\nХод соперника')
             arena.new_duel()
-        else:    # Если нет второго игрока, добавляем в список и ожидайте соперника
-            arena.waiting.append(duel)
+        else:                             # Если нет второго игрока, добавляем в список и ожидайте соперника
+            arena.waiting.append(duel)    #добавляем первого игрока
+            print(f"Первый игрок {message.from_user.first_name}")
             await dp.bot.send_message(duel.first_id, 'Ожидаем соперника...')
 
 

@@ -4,7 +4,7 @@ from random import randint
 class Arena:
     waiting=[] #очередь
     combats=[]
-
+    print(waiting)
     def __init__(self):
         self.new_duel()
 
@@ -14,7 +14,7 @@ class Arena:
     def __str__(self):
         return f'В ожидании: {self.waiting} | в бою: {self.combats}'
         
-               
+          
 
 
 class Duel:
