@@ -11,7 +11,6 @@ from classes import Arena, Duel
 
 arena= Arena()
 
-
 @dp.message_handler(commands=['pvp'])
 async def mes_pvp(message: types.Message):
     global arena
@@ -29,103 +28,29 @@ async def mes_pvp(message: types.Message):
             arena.combats.append(duel)
             duel.first_move()
             await dp.bot.send_message(duel.first_id, f'Противник найден! Против тебя {message.from_user.first_name}!')
-            await dp.bot.send_message(duel.current_move(), f'Противник найден! Против тебя !Сейчас решим, кто первый ходит!\nКидаем жребий...')
+            await dp.bot.send_message(duel.current_move(), f'Противник найден! Сейчас решим, кто первый ходит!\nКидаем жребий...')
+            time.sleep(2)
             await dp.bot.send_message(duel.enemy(), 'Сейчас решим, кто первый ходит!\nКидаем жребий...')
+            with open ('C:\Python GB\Seminar_9\photo\Ilp.gif', 'rb') as gif1:
+                await dp.bot.send_animation(duel.current_move(), gif1 )
+            with open ('C:\Python GB\Seminar_9\photo\Ilp.gif', 'rb') as gif2:
+                await dp.bot.send_animation(duel.enemy(), gif2 )        
+            gif1.closed
+            gif2.closed
             time.sleep(3)
             await dp.bot.send_message(duel.current_move(), 'Жребий выбрал тебя первым! Удача на твоей стороне.\nТвой ход')
             await dp.bot.send_message(duel.enemy(), 'Первым ходит противник, плохое начало...\nХод соперника')
             arena.new_duel()
-        else:                             # Если нет второго игрока, добавляем в список и ожидайте соперника
+        else:                             # Если нет второго игрока, добавляем в список и ожидайте соперника                    
             arena.waiting.append(duel)    #добавляем первого игрока
             print(f"Первый игрок {message.from_user.first_name}")
             await dp.bot.send_message(duel.first_id, 'Ожидаем соперника...')
 
 
-@dp.message_handler()
-async def mec_turn(message: types.message):
-    global arena
-    for duel in arena.combats:
-        if duel.first_id==message.from_user.id or duel.second_id==message.from_user.id:
-            if duel.current_move()==message.from_user.id:
-                count = message.text
-                if count.isdigit() and 0<int(count)<29:
-                    duel.set_total(int(count))
-                    if duel.get_total()>0 and duel.get_total()>29:
-                        await dp.bot.send_message(duel.enemy(), f'Твой противник взял {count} конфет!\nНа столе осталось {duel.get_total()} конфеты'
-                                                                            '\nТеперь бери и ты!')
-                        await dp.bot.send_message(message.from_user.id,
-                                                    f'Ты взял {count} конфет,\nждем ход соперника...')        
-                        duel.switch()
-                    else:
-                        await dp.bot.send_message(duel.current_move(),
-                                                    f'Ты взял {count} конфет\nи ВЫИГРАЛ!!\nПОБЕДА!!!')        
-                        await dp.bot.send_message(duel.enemy(),
-                                                    f'Твой противник взял {count} конфет\nи вы проиграли!!\nПриходите в следующий раз! Может вам повезет?...')        
-                        arena.combats.remove(duel)
-                        print(arena)
-
-
-
-
-
-"""
-@dp.message_handler(commands=["duel"])
-async def mec_duel(message:types.Message):
-    global new_game
-    global total
-    global max_count
-    global duel
-    global first
-    global current
-    duel.append(int(message.from_user.id))
-    duel.append(int(message.text.aplit()[1]))
-    total = max_count
-    first = random.randint(0,1)
-    if len(message.text.split())!=1:
-        duel.append(int(message.from_user.id))
-        duel.append(int(message.text.split()[1]))
-        await start_pvp(duel)
-    else:
-        await message.answer('вызови друга на дуэль!')
-
-
-
-async def start_pvp(duel:list):
-    global new_game
-    global total
-    global max_count
-    global first
-    global current    
-    if first:
-        await dp.bot.send_message(duel[0], 'первый ход твой, тяни конфеты')
-        await dp.bot.send_message(duel[1], 'первый ход за противником, тяни конфеты')
-    else:
-        await dp.bot.send_message(duel[1], 'первый ход твой, тяни конфеты')
-        await dp.bot.send_message(duel[0], 'первый ход за противником, тяни конфеты')
-    current=duel[0] if first else duel[1]
-    new_game = True
-
-
-@dp.message_handler(commands=['pvp'])
-async def mes_pvp(message: types.Message):
-    global combat
-    global arena
-    if not combat:
-        combat.append(int(message.from_user.id))
-        await message.answer('Возможность игры вдвоем в процессе разработки, пожалуйста приходите позже.')
-    else:
-        combat.append(int(message.from_user.id))
-        arena.append(combat)
-        await dp.bot.send_message(combat[0], 'Противник найден!')
-        await start_pvp(combat)
-        combat=[]
-
-
-
 
 @dp.message_handler(commands=['start'])
 async def mes_start(message:types.Message):
-    await message.answer(f'Barev, {message.from_user.first_name} djan! Сегодня мы узнаем, кто умнее. Ты, или Skynet ?', reply_markup=kb_main_menu)
+    await message.answer(f'Barev, {message.from_user.first_name} djan! Сегодня мы узнаем, кто умнее. Ты, или Skynet ? А ещё мы добавили функцию игры против друзей в режиме pvp', reply_markup=kb_main_menu)
     user= []
     user.append(datetime.now().replace(microsecond=0))
     user.append(message.from_user.full_name)
@@ -133,7 +58,7 @@ async def mes_start(message:types.Message):
     user.append(message.from_user.username)
     user = list(map(str, user))
     time.sleep(2)
-    await message.answer(f'Суть игры проста, нужно тянуть конфеты.\nНа столе 100 конфет, выиграет тот кто последний вытянул конфеты.')
+    await message.answer(f'Суть игры проста, нужно тянуть конфеты.\nНа столе 100/150 конфет, как только останется 28 или меньше игра звершится. Выиграет тот, кто последний тянул конфеты!')
     with open('C:\Python GB\Seminar_9\Text.txt', 'a', encoding='utf-8') as data:
         data.write(' | ' .join(user)+ '\n')
 
@@ -148,20 +73,45 @@ async def mes_start(message:types.Message):
 
 @dp.message_handler(text=['Помощь'])
 async def mes_help(message: types.Message):
-    user= []
-    user.append(message.from_user.full_name)
-    user.append('')
-    user = list(map(str, user))
-    with open('C:\Python GB\Seminar_9\Text.txt', 'a', encoding='utf-8') as data:
-        data.write(' | ' .join()+ '\n')
-    data.closed
-    
+    r=randint(1,11)
+    time.sleep(2)
+    print(r)
+    if r==1:
+        await message.answer('Нет.')
+    if r==2:
+        await message.answer('No.')
+    if r==3:
+        with open ('C:\\Python GB\\Seminar_9\\photo\\q4yd.gif', 'rb') as gif13:
+            await message.answer_animation(gif13)
+        gif13.closed
+    if r==4:
+        with open ('C:\\Python GB\\Seminar_9\\photo\\oNj.gif', 'rb') as gif23:
+            await message.answer_animation(gif23)
+        gif23.closed
+    if r==5:
+        await message.answer('А мне это нужно?')
+    if r==6:
+        await message.answer('Услуга платная. С вас 1000 руб.')    
+    if r==7:
+        await message.answer('Бог поможет')
+    if r==8:
+        await message.answer('*грустный вздох искусственного интеллекта*')        
+    if r==9:
+        with open ('C:\Python GB\Seminar_9\photo\wewds.jpg', 'rb') as photo12:
+            await message.answer_photo(photo12)
+        photo12.closed       
+    if r==10:
+        with open ('C:\Python GB\Seminar_9\photo\qqqw.jpg', 'rb') as photo22:
+            await message.answer_photo(photo22)
+        photo22.closed            
+    if r==11:
+        with open ('C:\Python GB\Seminar_9\photo\weefd.jpg', 'rb') as photo25:
+            await message.answer_photo(photo25)
+        photo25.closed   
+
+                  
 
 
-
-@dp.message_handler(commands=['pvp'])
-async def mes_help(message: types.Message):
-    await message.answer('Возможность игры вдвоем в процессе разработки, пожалуйста приходите позже.')
 
 @dp.message_handler(commands=['set'])
 async def mes_setting(message: types.Message):
@@ -180,10 +130,10 @@ async def mes_setting(message: types.Message):
 @dp.message_handler(text=['Играть'])
 async def mes_setting(message: types.Message):
     global total
-    total = 100
-    await message.answer(f'Это я, Skynet. Если ты думаешь, что у тебя есть шансы, то ошибаешься! Сегодня я тебя уничтожу! Вводи число, какое количество конфет ты заберешь от 0 до 28 и поехали!"')
+    #total = 100
+    await message.answer(f'Это я, Skynet. Сегодня тебя ждет игра против искусственного интеллекта. Вводи число, какое количество конфет ты заберешь от 0 до 28 и поехали!"')
     time.sleep(1)
-    await message.answer('Цель игры чтобы на столе осталось 28 или меньше конфет, выиграет тот кто последний вытягивал')
+    await message.answer('Игра завершится когда на столе останется 28 или меньше конфет, выиграет тот кто последний вытягивал')
     with open ('C:\Python GB\Seminar_9\photo\yeds2.jpg', 'rb') as photo2:
         await message.answer_photo(photo2)
     photo2.closed
@@ -196,6 +146,9 @@ async def mes_setting(message: types.Message):
     with open('C:\Python GB\Seminar_9\Text.txt', 'a', encoding='utf-8') as data:
         data.write(' | ' .join(user)+ '\n')
     data.closed
+    time.sleep(1)
+    await message.answer('Извините, но одиночная игра временно не работает. Искусственный интеллект ушел на ремонтные работы,\nпопробуйте лучше режим pvp с друзьями!!  ')
+
 
 
 @dp.message_handler(text=['Бла', 'бла'])
@@ -217,6 +170,68 @@ async def get_user_photo(message: types.Message):
         await message.answer_photo(photo4)
     photo4.closed
 
+
+
+
+
+
+
+@dp.message_handler()
+async def mec_turn(message: types.message):
+    global arena
+    for duel in arena.combats:
+        if duel.first_id==message.from_user.id or duel.second_id==message.from_user.id:
+            if duel.current_move()==message.from_user.id:
+                count = message.text
+                if count.isdigit() and 0<int(count)<29:
+                    duel.set_total(int(count))
+                    if duel.get_total()>0 and duel.get_total()>29:
+                        await dp.bot.send_message(duel.enemy(), f'Твой противник взял {count} конфет!\nНа столе осталось {duel.get_total()} конфеты'
+                                                                            '\nТеперь бери и ты!')
+                        await dp.bot.send_message(message.from_user.id,
+                                                    f'Ты взял {count} конфет,\nждем ход соперника...')        
+                        duel.switch()
+                    else:
+                        with open ('C:\Python GB\Seminar_9\photo\Viktory.gif', 'rb') as gif1:
+                            await dp.bot.send_animation(duel.current_move(), gif1)
+                            user= []
+                        user.append(message.from_user.full_name)
+                        user.append(1)
+                        user = list(map(str, user))
+                        with open('C:\\Python GB\\Seminar_9\\user.txt', 'a', encoding='utf-8') as data:
+                            data.write(' | ' .join(user)+ '\n')
+                        data.closed
+                        
+                        with open ('C:\Python GB\Seminar_9\photo\TIAQ.gif', 'rb') as gif2:
+                            await dp.bot.send_animation(duel.enemy(), gif2)
+                        await dp.bot.send_message(duel.current_move(),
+                                                    f'Ты взял {count} конфет\nи ВЫИГРАЛ!!\nПОБЕДА!!!')        
+                        await dp.bot.send_message(duel.enemy(),
+                                                    f'Твой противник взял {count} конфет\nи вы проиграли!!\nПриходите в следующий раз! Может вам повезет?...')        
+                        arena.combats.remove(duel)
+                        print(arena)
+                        gif1.closed
+                        gif2.closed
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
 @dp.message_handler()
 async def mes_all(message: types.Message):
     global total, d, num5
@@ -276,7 +291,4 @@ async def mes_all(message: types.Message):
 
     if message.text.isdigit() == False:
         await message.answer('Введи число от 0 до 28, а не глупости всякие!')
-    print(message)
-
-
-"""
+    print(message)"""

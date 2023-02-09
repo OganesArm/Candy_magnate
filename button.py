@@ -1,6 +1,6 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-kb_main_menu= ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True) #показать кнопки/ Сделать их одноразовыми
+kb_main_menu= ReplyKeyboardMarkup(resize_keyboard=True) #показать кнопки/ Сделать их одноразовыми  one_time_keyboard=True
 
 btn_pvp=KeyboardButton('/pvp')
 btn_help=KeyboardButton('Помощь')
